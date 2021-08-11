@@ -9,11 +9,15 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import com.example.rcp.domain.Members;
+import com.example.rcp.mapper.MembersMapper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -21,8 +25,13 @@ class ReceptionProjectApplicationTests {
 	@Autowired
 	private DataSource ds;
 	
+	@Autowired
+	private MembersMapper mapper;
+	
 
-	@Test
+	
+
+	@Ignore@Test
 	public void testDataSource() throws Exception {
 		System.out.println("DS=" + ds);
 		
@@ -30,14 +39,26 @@ class ReceptionProjectApplicationTests {
 			System.out.println("Connection=" + conn);
 			assertThat(conn).isInstanceOf(Connection.class);
 			
-			assertEquals(4,getLong(conn,"select count(*) from member_info"));
+			assertEquals(4,getLong(conn,"select count(*) from members"));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	@Test
+	public void testMemberMapper() throws Exception{
+		
+//		String tel = mapper.getMemberTel(1);
+//		assertEquals("1234",tel);
+		
+		Members member = mapper.getLoginInfo("naruse@abc.ne.jp","11111111");
+		System.out.println("Member >>"+ member);
+		assertEquals("成瀬 太一",member.getName());
+		
+	}
 
+	
 	private long getLong(Connection conn, String sql) {
 		long result = 0;
 		try(Statement stmt = conn.createStatement()){
